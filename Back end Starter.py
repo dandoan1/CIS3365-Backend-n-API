@@ -73,6 +73,31 @@ def customer_signup(fname, lname, email):
 # END OF DAN SECTION CONTINUE BELOW 
 ###################################################
 
+######################
+#Isaiah's Section#
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+##########################
+# End of Isaiah's Section # 
+
+
+
 
 
 
