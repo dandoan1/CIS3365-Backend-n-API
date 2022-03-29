@@ -59,10 +59,23 @@ def unique_code_maker():
             x = False
 
 
-#unique_code_maker()
+
+
+def email_message_signup(email):
+    #create sample email
+    #token_maker()
+    #send email to cus email with link w token
+    # https://realpython.com/handling-email-confirmation-in-flask/
+    pass
+
 
 def customer_signup(fname, lname, email):
+    
     pass
+
+
+
+
 
 #cursor.execute('SELECT * FROM Customer')
 #conn.commit()
