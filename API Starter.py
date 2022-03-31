@@ -34,13 +34,24 @@ def home():
 # aka customer has given us their first and last name so now we give those information to the 
 # add_user for it to run the SQL in the backend
 
-@app.route('/api/users/create', methods=['POST'])
+@app.route('/api/user/signup', methods=['POST'])
 def api_user_create():
     request_data = request.get_json() #requesting json
     fname = request_data['firstname']
     lname = request_data['lastname']
-    add_user(fname, lname)  #adding first and lastname to the sql query
+    email = request_data['email']
+    code = request_data['code']
+    token = request_data['token']
+    if email_signup_checker():
+        verification_token_maker()
+        #send_email_function_here()
+        if verification_token_checker(token):
+            if code in locals():
+                add_user_with_code(fname, lname, email)  #adding first and lastname to the sql query
+            else:
+                add_user_without_code(fname, lname, email)
     return 'User added request worked'
+
 
 
 
