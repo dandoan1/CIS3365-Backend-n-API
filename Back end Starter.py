@@ -95,6 +95,19 @@ def add_point(code):
 
 #print(add_point('A4B8J'))
 
+def email_signup_check(code):
+    current_email_list = []
+    get_current_emails = 'SELECT email FROM Customer'
+    try:
+        cursor.execute(get_current_emails)
+    except Error as e:
+        print (f"The error {e} has occur")
+    for x in cursor:
+        current_email_list.append(x[0])
+    if code in current_email_list:
+        return 'Email already exist! Please try a different one'
+    else:
+        return 'Email does not exist in database, Good to go'
 
 
 #function below creates a new customer with given fname, lname and email
@@ -153,9 +166,54 @@ def customer_signup_no_code(fname, lname, email):
 
     return "Sign up successful"
 
-print (customer_signup_no_code('Peter', 'Nguyen', 'pnguyen@gmail.com'))
 
 
+def verification_token_maker():
+    list = 'QWERTYUIOPASDFGHJKLZXCVBNM12345678901234567890'
+    token = ""
+    for x in range (10):
+        token += random.choice(list)
+    #insert into token db
+    print(token)
+    token = ("INSERT INTO Token\n"
+           "([Token]\n"
+           ",[Time_create]\n"
+           ",[Token_statusID])\n"
+     "VALUES\n"
+           f"('{token}'\n"
+           ",(SELECT GETDATE())\n"
+           ",'1')")
+    try:
+        cursor.execute(token)
+        conn.commit()
+    except Error as e:
+        print(f"The error '{e}' occurred")
+    
+#verification_token_maker()
+
+def verification_token_checker(vtoken):
+    current_token_list = []
+    get_current_tokens = 'SELECT Token FROM Token'
+    try:
+        cursor.execute(get_current_tokens)
+    except Error as e:
+        print (f"The error {e} has occur")
+    for token in cursor:
+        current_token_list.append(token[0])
+    if vtoken in current_token_list:
+        mark = ("UPDATE Token\n"
+            "SET Token_statusID = '3'\n"
+            f"WHERE Token = '{vtoken}'")
+        try:
+            cursor.execute(mark)
+            conn.commit()
+        except Error as e:
+            print(f"The error '{e}' occurred")
+        return 'Token is good to go'
+    else:
+        return 'Token does not exist'
+
+#verification_token_checker('6J16MLVDBN')
 
 
 
@@ -167,8 +225,6 @@ def email_message_signup(email):
     pass
 
 
-def customer_signup(fname, lname, email):
-    pass
 
 
 
