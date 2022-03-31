@@ -202,7 +202,7 @@ def verification_token_checker(vtoken):
         current_token_list.append(token[0])
     if vtoken in current_token_list:
         mark = ("UPDATE Token\n"
-            "SET Token_statusID = '3'\n"
+            "SET Token_statusID = '3', Time_expire = (SELECT GETDATE())\n"
             f"WHERE Token = '{vtoken}'")
         try:
             cursor.execute(mark)
