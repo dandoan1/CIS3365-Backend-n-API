@@ -68,6 +68,26 @@ def api_user_create():
         return 'email existed'
 
 
+@app.route('/api/user/profile', methods=['POST'])
+def api_user_profile():
+    request_data = request.get_json() #requesting json
+    fname = request_data['firstname']
+    lname = request_data['lastname']
+    email = request_data['email']
+    code = request_data['code']
+    token = request_data['token']
+
+@app.route('/api/user/admin', methods=['POST'])
+def api_user_admin():
+    request_data = request.get_json() #requesting json
+    fname = request_data['firstname']
+    lname = request_data['lastname']
+    email = request_data['email']
+    code = request_data['code']
+    token = request_data['token']
+
+
+
 
 
 app.run()

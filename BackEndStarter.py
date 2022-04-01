@@ -25,6 +25,10 @@ def employee_view():
         print (f"The error {e} has occur")
     return cursor
 
+
+
+
+
 def customer_view():
     customer_view = 'SELECT * FROM Customer'
 
@@ -33,6 +37,19 @@ def customer_view():
     except Error as e:
         print (f"The error {e} has occur")
     return cursor
+
+def get_customer_info(email):
+    get_info = f"SELECT * FROM Customer WHERE email = '{email}'"
+    try:
+        cursor.execute(get_info)
+        rows = cursor.fetchall()
+    except Error as e:
+        print (f"The error {e} has occur")
+    return rows
+
+#print(get_customer_info('yanahdi@gmail.com'))
+
+
 
 def get_current_codes():
     current_code_list = []
@@ -241,7 +258,7 @@ def send_email(receiver_email, code):
     
     print("email sent")
 
-send_email("daannn445@gmail.com", "NEWCODE")
+send_email("daannn445@gmail.com", "TEST")
 
 
 ###########################
