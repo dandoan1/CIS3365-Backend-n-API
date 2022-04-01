@@ -2,13 +2,15 @@ import flask
 #from Back end Starter import (etc...)
 from flask import jsonify
 from flask import request, make_response
+from BackEndStarter import (email_signup_check, verification_token_checker, verification_token_maker,
+customer_signup_no_code, customer_signup_with_code, send_email)
 
 
 #Put all route ends here and put what they are example below
 #######################################
 
 #view specific user check http://127.0.0.1:5000/api/users/id                                      GET    
-#add user check http://127.0.0.1:5000/api/users/create                                            POST
+#add user check http://127.0.0.1:5000/api/user/signup                                            POST
 
 
 
@@ -42,15 +44,28 @@ def api_user_create():
     email = request_data['email']
     code = request_data['code']
     token = request_data['token']
-    if email_signup_checker():
-        verification_token_maker()
-        #send_email_function_here()
+    if email_signup_check(email):
+        if token == "":
+            created_token = verification_token_maker()
+            send_email(email, created_token)
+            #send_email_function_here(created_token)
+        print('email check passed, sent email with token')
+        print('token created', created_token)
         if verification_token_checker(token):
-            if code in locals():
-                add_user_with_code(fname, lname, email)  #adding first and lastname to the sql query
+            print('token check passed')
+            if code == "":
+                customer_signup_no_code(fname, lname, email)
+                print('code check passed and created account')
+                return 'account has been created successfully'
             else:
-                add_user_without_code(fname, lname, email)
-    return 'User added request worked'
+                customer_signup_with_code(fname, lname, email, code)  #adding first and lastname to the sql query
+                print('code check passed and created account')
+                return 'account has been created successfully'
+        else:
+            print('token check failed')
+            return 'token given was wrong'
+    else:
+        return 'email existed'
 
 
 
