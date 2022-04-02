@@ -2,8 +2,8 @@ import flask
 #from Back end Starter import (etc...)
 from flask import jsonify
 from flask import request, make_response
-from BackEndStarter import (email_signup_check, verification_token_checker, verification_token_maker,
-customer_signup_no_code, customer_signup_with_code, send_email, get_customer_info, get_all_tables, view_table, add_data)
+from BackEndStarter import (email_signup_check, verification_token_checker, verification_token_maker, delete_data,
+customer_signup_no_code, customer_signup_with_code, send_email, get_customer_info, get_all_tables, view_table, add_data, update_data)
 
 
 #Put all route ends here and put what they are example below
@@ -75,8 +75,6 @@ def api_user_create():
     "token": "047R7U9SNF"
 }
 """
-
-
 
 
 
@@ -179,6 +177,28 @@ def api_user_admin_add_data():
     "para17": ""
 }
 """
+
+
+
+@app.route('/api/user/admin/table/update', methods=['POST'])
+def api_user_admin_update_data():
+    request_data = request.get_json() #requesting json
+    table_name = request_data['table_name']
+    column_name = request_data['column_name']
+    ID = request_data['ID']
+    new_data = request_data['new_data']
+    update_data(table_name, column_name, ID, new_data)
+    return 'update data successful'
+
+@app.route('/api/user/admin/table/delete', methods=['POST'])
+def api_user_admin_delete_data():
+    request_data = request.get_json() #requesting json
+    table_name = request_data['table_name']
+    ID = request_data['ID']
+    delete_data(table_name,  ID)
+    return 'delete data successful'
+
+
 
 
 

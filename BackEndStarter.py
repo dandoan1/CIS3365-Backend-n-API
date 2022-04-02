@@ -693,51 +693,20 @@ def add_data(table_name, para1, para2, para3, para4, para5, para6, para7, para8,
         except Error as e:
             print(f"The error '{e}' occurred")
 
+def update_data(table_name, column_name, ID, new_data):
+    update = (f"UPDATE {table_name}\n"
+        f"SET [{column_name}] = '{new_data}'\n"
+        f"WHERE ID = '{ID}'")
+    try:
+            cursor.execute(update)
+            conn.commit()
+    except Error as e:
+        print(f"The error '{e}' occurred")
 
-
-
-#add_data('customer','','','','','','','','','','','','','','','','','')
-
-
-
-
-
-
-#cursor.execute('SELECT * FROM Customer')
-#conn.commit()
-#for i in cursor:
-#    print(i)
-
-
-# END OF DAN SECTION CONTINUE BELOW 
-###################################################
-
-######################
-#Isaiah's Section#
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-##########################
-# End of Isaiah's Section # 
-
-
-
-
-
-
-
+def delete_data(table_name, ID):
+    delete = f"DELETE FROM {table_name} WHERE ID = '{ID}'"
+    try:
+            cursor.execute(delete)
+            conn.commit()
+    except Error as e:
+        print(f"The error '{e}' occurred")
