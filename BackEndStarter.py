@@ -19,7 +19,7 @@ profile_info = ('Firstname:', 'Lastname:', 'Phone number:', 'Birth Date:', 'Uniq
 
 def get_customer_info(email):
     new_return = {}
-    get_info = f"SELECT Fname, Lname, Phonenum, BD, Unique_code, Address_line1, CountryID, Amount_discount_have, StateShortened_name, City, Zipcode, Amount_discount_used FROM Customer WHERE email = '{email}'"
+    get_info = f"SELECT Fname, Lname, Phonenum, BD, Unique_code, Address_line1, CountryID, Amount_discount_have, StateID, City, Zipcode, Amount_discount_used FROM Customer WHERE email = '{email}'"
     try:
         cursor.execute(get_info)
         rows = cursor.fetchall()
@@ -315,7 +315,7 @@ def add_data(table_name, para1, para2, para3, para4, para5, para6, para7, para8,
            ",[Customer_typeID]\n"
            ",[CountryID]\n"
            ",[Amount_discount_have]\n"
-           ",[StateShortened_name]\n"
+           ",[StateID]\n"
            ",[City]\n"
            ",[Zipcode]\n"
            ",[Customer_statusID]\n"
@@ -351,12 +351,14 @@ def add_data(table_name, para1, para2, para3, para4, para5, para6, para7, para8,
         "([CustomerID]\n"
            ",[StoreID]\n"
            ",[Feedback]\n"
-           ",[Customer_feedback_statusID])\n"
+           ",[Customer_feedback_statusID]\n"
+           ",[Feedback_date])\n"
      "VALUES\n"
            f"('{para1}'\n"
            f",'{para2}'\n"
            f",'{para3}'\n"
-           f",'{para4}')")
+           f",'{para4}'\n"
+           f",'{para5}')")
         try:
             cursor.execute(add)
             conn.commit()
@@ -380,13 +382,17 @@ def add_data(table_name, para1, para2, para3, para4, para5, para6, para7, para8,
            ",[CustomerID]\n"
            ",[Note]\n"
            ",[Customer_interaction_statusID]\n"
+           ",[Date]\n"
+           ",[StoreID]\n"
            ",[Used_discount])\n"
      "VALUES\n"
            f"('{para1}'\n"
            f",'{para2}'\n"
            f",'{para3}'\n"
            f",'{para4}'\n"
-           f",'{para5}')")
+           f",'{para5}'\n"
+           f",'{para6}'\n"
+           f",'{para7}')")
         try:
             cursor.execute(add)
             conn.commit()
@@ -479,9 +485,10 @@ def add_data(table_name, para1, para2, para3, para4, para5, para6, para7, para8,
            ",[Address_line1]\n"
            ",[CountryID]\n"
            ",[Employee_typeID]\n"
-           ",[StateShortened_name]\n"
+           ",[StateID]\n"
            ",[City]\n"
            ",[Zipcode]\n"
+           ",[Hired_date]\n"
            ",[Employee_statusID])\n"
      "VALUES\n"
            f"('{para1}'\n"
@@ -496,7 +503,8 @@ def add_data(table_name, para1, para2, para3, para4, para5, para6, para7, para8,
            f",'{para10}'\n"
            f",'{para11}'\n"
            f",'{para12}'\n"
-           f",'{para13}'\n")
+           f",'{para13}'\n"
+           f",'{para14}'\n")
         try:
             cursor.execute(add)
             conn.commit()
@@ -545,14 +553,16 @@ def add_data(table_name, para1, para2, para3, para4, para5, para6, para7, para8,
            ",[Note]\n"
            ",[Other_employee]\n"
            ",[CustomerID]\n"
-           ",[Cost])\n"
+           ",[Cost]\n"
+           ",[Date])\n"
      "VALUES\n"
            f"('{para1}'\n"
            f",'{para2}'\n"
            f",'{para3}'\n"
            f",'{para4}'\n"
            f",'{para5}'\n"
-           f",'{para6}')")
+           f",'{para6}'\n"
+           f",'{para7}')")
         try:
             cursor.execute(add)
             conn.commit()
@@ -643,7 +653,7 @@ def add_data(table_name, para1, para2, para3, para4, para5, para6, para7, para8,
            "([Store_name]\n"
            ",[Address_line1]\n"
            ",[CountryID]\n"
-           ",[StateShortened_name]\n"
+           ",[StateID]\n"
            ",[City]\n"
            ",[Zipcode]\n"
            ",[Phonenum])\n"

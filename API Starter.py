@@ -144,7 +144,7 @@ def api_user_admin_add_data():
     "para8": "cus type id", #default 1 new
     "para9": "country id", #default 185 usa
     "para10": "discount have", #default 0
-    "para11": "state short", #default TX
+    "para11": "stateid", #default 95
     "para12": "city",
     "para13": "zip",
     "para14": "cus statuss", #default 1 active
