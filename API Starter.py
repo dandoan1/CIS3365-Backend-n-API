@@ -2,8 +2,8 @@ import flask
 #from Back end Starter import (etc...)
 from flask import jsonify
 from flask import request, make_response
-from BackEndStarter import (email_signup_check, verification_token_checker, verification_token_maker, delete_data,
-customer_signup_no_code, customer_signup_with_code, send_email, get_customer_info, get_all_tables, view_table, add_data, update_data)
+from BackEndStarter import (email_signup_check, verification_token_checker, verification_token_maker, delete_data, get_interaction, add_interaction, redeem_discount,
+customer_signup_no_code, customer_signup_with_code, send_email, get_customer_info, get_all_tables, view_table, add_data, update_data, check_have_discount)
 
 
 #Put all route ends here and put what they are example below
@@ -190,6 +190,17 @@ def api_user_admin_update_data():
     update_data(table_name, column_name, ID, new_data)
     return 'update data successful'
 
+
+"""
+{
+    "table_name": "",
+    "column_name": "", 
+    "ID": "",
+    "new_data": ""
+}
+"""
+
+
 @app.route('/api/user/admin/table/delete', methods=['POST'])
 def api_user_admin_delete_data():
     request_data = request.get_json() #requesting json
@@ -199,6 +210,60 @@ def api_user_admin_delete_data():
     return 'delete data successful'
 
 
+"""
+{
+    "table_name": "",
+    "ID": ""
+}
+"""
+
+
+@app.route('/api/user/admin/interaction/get/<email>', methods=['GET'])
+def api_user_admin_interaction_get(email):
+    info = get_interaction(email)
+    return jsonify(info)
+
+#http://127.0.0.1:5000/api/user/admin/interaction/get/<email> for employee to view all recent interaction by the customer
+
+
+@app.route('/api/user/admin/interaction/add', methods=['POST'])
+def api_user_admin_interaction_add():
+    request_data = request.get_json() #requesting json
+    email = request_data['email']
+    serviceid = request_data['serviceid']
+    note = request_data['note']
+    storeid = request_data['storeid']
+    add_interaction(email, serviceid, note, storeid)
+    return 'add interaction successful'
+
+"""
+{
+    "email": "",
+    "serviceid": "", 
+    "note": "",
+    "storeid": ""
+}
+"""
+
+
+
+@app.route('/api/user/admin/interaction/redeem', methods=['POST'])
+def api_user_admin_interaction_redeem():
+    request_data = request.get_json() #requesting json
+    email = request_data['email']
+    interaction_id = request_data['interaction_id']
+    if check_have_discount(email):
+        redeem_discount(email, interaction_id)
+        return 'redeem successful for the interaction'
+    else:
+        return 'user does not have any discount to redeem'
+
+"""
+{
+    "email": "",
+    "interaction_id": ""
+}
+"""
 
 
 

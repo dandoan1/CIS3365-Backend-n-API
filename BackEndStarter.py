@@ -720,3 +720,84 @@ def delete_data(table_name, ID):
             conn.commit()
     except Error as e:
         print(f"The error '{e}' occurred")
+
+
+#print(check_have_discount('yanahdi@gmail.com'))
+
+def id_from_email(email):
+    get = f"SELECT ID From Customer WHERE Email = '{email}'"
+    try:
+            cursor.execute(get)
+            result = cursor.fetchall()
+    except Error as e:
+        print(f"The error '{e}' occurred")
+    ID = result[0][0]
+    return ID
+
+
+
+def get_interaction(email):
+    my_list = []
+    id = id_from_email(email)
+    get = f"SELECT * FROM Customer_interaction WHERE CustomerID ='{id}'"
+    try:
+        cursor.execute(get)
+        rows = cursor.fetchall()
+        columns = [column[0] for column in cursor.description]
+    except Error as e:
+        print (f"The error {e} has occur")
+    for y in range(len(rows)):
+        my_dict = {}
+        for x in range(len(columns)):
+            my_dict[columns[x]] = rows[y][x]
+        my_list.append(my_dict)
+    return my_list
+
+def add_interaction(email, serviceid, note, interaction_status, storeid):
+    id = id_from_email(email)
+    add = ("INSERT INTO [Customer_interaction]\n"
+        "([ServiceID]\n"
+           ",[CustomerID]\n"
+           ",[Note]\n"
+           ",[StoreID]\n"
+     "VALUES\n"
+           f"('{serviceid}'\n"
+           f",'{id}'\n"
+           f",'{note}'\n"
+           f",'{storeid}'\n")
+    try:
+        cursor.execute(add)
+        conn.commit()
+    except Error as e:
+        print(f"The error '{e}' occurred")
+
+#print(get_interaction('moneymitchel@icloud.com'))
+
+
+def check_have_discount(email):
+    check = f"SELECT Amount_discount_have FROM Customer WHERE Email = '{email}'"
+    try:
+            cursor.execute(check)
+            result = cursor.fetchall()
+    except Error as e:
+        print(f"The error '{e}' occurred")
+    y = result[0][0]
+    if y == '0':
+        return False
+    else:
+        return True
+
+
+def redeem_discount(email, interaction_id):
+    update_add = f"UPDATE Customer SET Amount_discount_used = Amount_discount_used + 1 WHERE Email = '{email}'"
+    update_remove = f"UPDATE Customer SET Amount_discount_have = Amount_discount_have - 1 WHERE Email = '{email}'"
+    update_interaction = f"UPDATE Customer_interaction SET Used_discount = 1 WHERE ID = '{interaction_id}'"
+    try:
+            cursor.execute(update_add)
+            conn.commit()
+            cursor.execute(update_remove)
+            conn.commit()
+            cursor.execute(update_interaction)
+            conn.commit()
+    except Error as e:
+        print(f"The error '{e}' occurred")
