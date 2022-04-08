@@ -206,7 +206,7 @@ def verification_token_checker(vtoken):
         current_token_list.append(token[0])
     if vtoken in current_token_list:
         mark = ("UPDATE Token\n"
-            "SET Token_statusID = '3', Time_expire = (SELECT GETDATE())\n"
+            "SET Token_statusID = '3', Time_used = (SELECT GETDATE())\n"
             f"WHERE Token = '{vtoken}'")
         try:
             cursor.execute(mark)
@@ -244,6 +244,22 @@ def send_email(receiver_email, code):
 
 #send_email("daannn445@gmail.com", "TEST")
 ###########################
+
+
+def get_code(email):
+    get = f"SELECT Unique_code FROM Customer WHERE Email = '{email}'"
+    try:
+        cursor.execute(get)
+        rows = cursor.fetchall()
+    except Error as e:
+        print (f"The error {e} has occur")
+    return rows[0][0]
+
+
+
+
+#print(get_code('mushtaqueyasir@gmail.com'))
+
 
 def get_all_tables():
     my_list = []
@@ -755,18 +771,18 @@ def get_interaction(email):
         my_list.append(my_dict)
     return my_list
 
-def add_interaction(email, serviceid, note, interaction_status, storeid):
+def add_interaction(email, serviceid, note, storeid):
     id = id_from_email(email)
     add = ("INSERT INTO [Customer_interaction]\n"
         "([ServiceID]\n"
            ",[CustomerID]\n"
            ",[Note]\n"
-           ",[StoreID]\n"
+           ",[StoreID])\n"
      "VALUES\n"
            f"('{serviceid}'\n"
            f",'{id}'\n"
            f",'{note}'\n"
-           f",'{storeid}'\n")
+           f",'{storeid}'\n)")
     try:
         cursor.execute(add)
         conn.commit()
@@ -774,7 +790,7 @@ def add_interaction(email, serviceid, note, interaction_status, storeid):
         print(f"The error '{e}' occurred")
 
 #print(get_interaction('moneymitchel@icloud.com'))
-
+#add_interaction('moneymitchel@icloud.com', '3', '', '2')
 
 def check_have_discount(email):
     check = f"SELECT Amount_discount_have FROM Customer WHERE Email = '{email}'"
@@ -783,22 +799,33 @@ def check_have_discount(email):
             result = cursor.fetchall()
     except Error as e:
         print(f"The error '{e}' occurred")
-    y = result[0][0]
-    if y == '0':
+    if result[0][0] == 0:
         return False
     else:
         return True
+#print(check_have_discount('drewgieseke@gmail.com'))
 
 
 def redeem_discount(email, interaction_id):
     update_add = f"UPDATE Customer SET Amount_discount_used = Amount_discount_used + 1 WHERE Email = '{email}'"
     update_remove = f"UPDATE Customer SET Amount_discount_have = Amount_discount_have - 1 WHERE Email = '{email}'"
     update_interaction = f"UPDATE Customer_interaction SET Used_discount = 1 WHERE ID = '{interaction_id}'"
+    update_interaction2 = f"UPDATE Customer_interaction SET Customer_interaction_statusID = 4 WHERE ID = '{interaction_id}'"
     try:
             cursor.execute(update_add)
             conn.commit()
             cursor.execute(update_remove)
             conn.commit()
+            cursor.execute(update_interaction)
+            conn.commit()
+            cursor.execute(update_interaction2)
+            conn.commit()
+    except Error as e:
+        print(f"The error '{e}' occurred")
+
+def interaction_finish(interaction_id):
+    update_interaction = f"UPDATE Customer_interaction SET Customer_interaction_statusID = 4 WHERE ID = '{interaction_id}'"
+    try:
             cursor.execute(update_interaction)
             conn.commit()
     except Error as e:

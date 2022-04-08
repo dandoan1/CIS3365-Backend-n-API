@@ -3,7 +3,7 @@ import flask
 from flask import jsonify
 from flask import request, make_response
 from BackEndStarter import (email_signup_check, verification_token_checker, verification_token_maker, delete_data, get_interaction, add_interaction, redeem_discount,
-customer_signup_no_code, customer_signup_with_code, send_email, get_customer_info, get_all_tables, view_table, add_data, update_data, check_have_discount)
+customer_signup_no_code, customer_signup_with_code, send_email, get_customer_info, get_all_tables, view_table, add_data, update_data, check_have_discount, get_code, interaction_finish)
 
 
 #Put all route ends here and put what they are example below
@@ -49,22 +49,25 @@ def api_user_create():
             created_token = verification_token_maker()
             send_email(email, created_token)
             print('token created', created_token)
-        print('email check passed, sent email with token')
+            return('email check passed, sent email with token')
         if verification_token_checker(token):
             print('token check passed')
             if code == "":
                 customer_signup_no_code(fname, lname, email)
+                data = get_code(email)
                 print('code check passed and created account')
-                return 'account has been created successfully'
+
+                return f"account has been created successfully, your unique code is {data}"
             else:
-                customer_signup_with_code(fname, lname, email, code)  #adding first and lastname to the sql query
+                customer_signup_with_code(fname, lname, email, code)
+                data = get_code(email)
                 print('code check passed and created account')
-                return 'account has been created successfully'
+                return f"account has been created successfully, your unique code is {data}"
         else:
             print('token check failed')
-            return 'try entering your token again'
+            return 'please enter your token'
     else:
-        return 'email existed'
+        return 'email existed, please try with a different email'
 
 """
 {
@@ -247,21 +250,27 @@ def api_user_admin_interaction_add():
 
 
 
-@app.route('/api/user/admin/interaction/redeem', methods=['POST'])
-def api_user_admin_interaction_redeem():
+@app.route('/api/user/admin/interaction/finish', methods=['POST'])
+def api_user_admin_interaction_finish():
     request_data = request.get_json() #requesting json
     email = request_data['email']
     interaction_id = request_data['interaction_id']
-    if check_have_discount(email):
-        redeem_discount(email, interaction_id)
-        return 'redeem successful for the interaction'
-    else:
-        return 'user does not have any discount to redeem'
+    redeem = request_data['redeem']
+    if redeem == 'y':
+        if check_have_discount(email):
+            redeem_discount(email, interaction_id)
+            return 'redeem successful for the interaction'
+        else:
+            return 'user does not have any discount to redeem'
+    if redeem == 'n':
+        interaction_finish(interaction_id)
+        return 'interaction completed'
 
 """
 {
-    "email": "",
-    "interaction_id": ""
+    "email": "moneymitchel@icloud.com",
+    "interaction_id": "13",
+    "redeem": "y"       y or n
 }
 """
 
