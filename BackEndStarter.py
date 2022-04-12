@@ -398,7 +398,8 @@ def add_data(table_name, para1, para2, para3, para4, para5, para6, para7, para8,
            ",[CustomerID]\n"
            ",[Note]\n"
            ",[Customer_interaction_statusID]\n"
-           ",[Date]\n"
+           ",[Date_insert]\n"
+           ",[Date_scheduled]\n"
            ",[StoreID]\n"
            ",[Used_discount])\n"
      "VALUES\n"
@@ -408,7 +409,8 @@ def add_data(table_name, para1, para2, para3, para4, para5, para6, para7, para8,
            f",'{para4}'\n"
            f",'{para5}'\n"
            f",'{para6}'\n"
-           f",'{para7}')")
+           f",'{para7}'\n"
+           f",'{para8}')")
         try:
             cursor.execute(add)
             conn.commit()
